@@ -1,0 +1,27 @@
+
+{% extends 'base.html' %}
+
+{% include 'messages.html' %}
+
+{% block main %}
+<div class='container'>
+<div class='row'>
+<div class=" card col-sm-6 offset-sm-3 " style="width: 18rem;">
+    <div class="card-body ">
+    <img src='{{post.image.url}}' class="img-fluid">
+        <h5 class="card-title">{{post.title}}</h5>
+        <p class="card-text">{{post.content}}</p>
+        <p class='pull-right'> {{post.update|timesince}} ago</p>
+        <a href="{{post.get_absolute_url}}/edit"><button class='btn  btn-primary' type='button'>edit</button > </a>
+        <a href="{{post.get_absolute_url}}/delete"><button class='btn  btn-primary' type='button'>delete</button > </a>
+        <hr>
+        <div class="fb-like" data-href="{{request.build_absolute_uri}}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
+    </div>
+    
+</div>
+
+
+
+<div class="fb-comments col-sm-6  offset-sm-3" data-href="{{request.build_absolute_uri}}" data-numposts="5" 
+data-width="500"></div></div></div>
+{% endblock main %}
