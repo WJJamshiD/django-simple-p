@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+
+{% block main %}
+<div class='container'>
+{% include 'messages.html' %}
+<h1 class='text-center'>All post </h1>
+<form method='GET' action='{% url "post_list" %}'>
+<input type='text' class='col-sm-9' placeholder='search posts' name='qqq' value='{%if request.GET.qqq %} {{request.GET.qqq}}{%endif%}'/>
+<input type='submit' value='search' class='col-sm-1'/>
+</form>
+
+<div class='row'>
+{%for item in page_obj%}
+
+<div class="card col-sm-5 m-sm-2" style="width: 18rem;">
+  <div class="card-body ">
+    <h5 class="card-title">{{item.title}}</h5>
+    <p class="card-text">{{item.content}}</p>
+    <p class='pull-right'> {{item.update}}</p>
+    <a href="{{item.get_absolute_url}}" class="card-link">Read</a>
+    
+  </div>
+</div>
+{% endfor %}
+
+
+</div>
+<div class="pagination">
+<span class="step-links">
+{% if page_obj.has_previous %}
+<a href="?page=1">&laquo; first</a>
+<a href="?page={{ page_obj.previous_page_number }}{%if request.GET.qqq %}&qqq={{request.GET.qqq}} {% endif %}">previous</a>
+{% endif %}
+<span class="current">
+Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+</span>
+{% if page_obj.has_next %} 
+<a href="?page={{ page_obj.next_page_number }}{%if request.GET.qqq %}&qqq={{request.GET.qqq}} {% endif %}">next</a>
+<a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+{% endif %}
+</span>
+</div>
+<a href="{%url 'create'%}"><button class='btn  btn-primary' type='button'>create new post</button > </a>
+</div>
+
+{% endblock main %}

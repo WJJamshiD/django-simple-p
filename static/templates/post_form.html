@@ -1,0 +1,15 @@
+Create your form
+{% if messages%}
+{%for item in messages%}
+<p> {{item}} </p>
+{% endfor %}
+{%endif%}
+
+<form action=' ' method='POST' enctype='multipart/form-data'>
+{% csrf_token %}
+{{form.as_p}}
+
+<input type=submit value='Create' >
+</form>
+
+
