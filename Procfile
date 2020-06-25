@@ -1,1 +1,1 @@
-web: gunicorn trynew.wsgi
+web: gunicorn blog.wsgi

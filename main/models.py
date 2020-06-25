@@ -3,7 +3,18 @@ from django.urls import reverse
 from django.utils.text import slugify 
 import itertools
 from django.db.models.signals import pre_save
+from django.conf import settings
+from markdown_deux import markdown
+from django.utils.html import mark_safe
 # Create your models here.
+
+
+
+
+class PostManager(models.Manager):
+	def all(self,*args,**kwargs):
+		return super(PostManager,self).filter(drafts=False)
+
 
 
 def upload_path(instan,file):
@@ -19,14 +30,20 @@ class Post(models.Model):
 	height=models.IntegerField(default=0)
 	width=models.IntegerField(default=0)
 	slug=models.SlugField(unique=True)
+	user=models.ForeignKey(settings.AUTH_USER_MODEL,default=1,on_delete=models.CASCADE)
+	drafts=models.BooleanField(default=True)
 
-
+	objects=PostManager()
 
 	def __str__(self):
 		return self.title
+
+	def get_markdown(self):
+		content=markdown(self.content)
+		return mark_safe(content)
    
 	def get_absolute_url(self):
-		return reverse("post_detail", kwargs={"abc": self.id})
+		return reverse("post_detail", kwargs={"slug": self.slug})
 	
 	#              creating unique slug (1)
 	# def generate_slug(self):

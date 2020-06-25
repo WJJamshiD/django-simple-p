@@ -1,6 +1,8 @@
 
 {% extends 'base.html' %}
 
+
+
 {% include 'messages.html' %}
 
 {% block main %}
@@ -10,8 +12,10 @@
     <div class="card-body ">
     <img src='{{post.image.url}}' class="img-fluid">
         <h5 class="card-title">{{post.title}}</h5>
-        <p class="card-text">{{post.content}}</p>
-        <p class='pull-right'> {{post.update|timesince}} ago</p>
+        <div class="card-text markdown image-in-post">{{post.content}}</div><hr>
+        <p class='float-right'> {{post.update|timesince}} ago</p>
+        
+        <p class=''> {{post.user}} </p>
         <a href="{{post.get_absolute_url}}/edit"><button class='btn  btn-primary' type='button'>edit</button > </a>
         <a href="{{post.get_absolute_url}}/delete"><button class='btn  btn-primary' type='button'>delete</button > </a>
         <hr>

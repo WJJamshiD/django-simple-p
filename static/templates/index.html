@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{%load mytag %}
 
 
 {% block main %}
@@ -14,12 +14,14 @@
 <div class='row'>
 {%for item in page_obj%}
 
-<div class="card col-sm-5 m-sm-2" style="width: 18rem;">
+<div class="card col-sm-5 m-sm-2 image-in-post" style="width: 18rem;">
   <div class="card-body ">
     <h5 class="card-title">{{item.title}}</h5>
-    <p class="card-text">{{item.content}}</p>
-    <p class='pull-right'> {{item.update}}</p>
-    <a href="{{item.get_absolute_url}}" class="card-link">Read</a>
+    {{item.get_markdown|truncatechars_html:120}}<hr>
+    
+    <p > Author: {{item.user}}  <span class='float-right'> {{item.update|timesince}} ago </span></p>
+    <a href="{{item.get_absolute_url}}" class="card-link">
+    	<button type='button' class='btn btn-primary btn-sm' >View</button></a>
     
   </div>
 </div>

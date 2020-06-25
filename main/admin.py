@@ -10,14 +10,14 @@ class PostAdminModel(admin.ModelAdmin):
     fieldsets = (
       
         ('qolgani', {
-            "fields": ('title','content','image',('width','height'),
+            "fields": ('title','content','image',('width','height'),'drafts'
                 
             ),
         }),
 
     )
-    list_display=('title','slug','id','timestamp',)
-    list_editable=['title']
+    list_display=('title','drafts','slug','id','timestamp',)
+    list_editable=['title','drafts']
     list_display_links=['timestamp']
     list_filter=('content','title')
     #list_display_links=None

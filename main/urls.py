@@ -1,4 +1,4 @@
-"""trynew URL Configuration
+"""blog URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -19,13 +19,11 @@ from . import views
 
 
 urlpatterns = [
-    path('all',views.post_list, name='post_list'),
-    path('<int:abc>',views.post_detail, name='post_detail'),
-    path('<int:abc>/edit',views.post_edit, name='edit'),
-    path('<int:abc>/delete',views.post_delete, name='delete'),
+    path('all/',views.post_list, name='post_list'),
+    path('post/<str:slug>',views.post_detail, name='post_detail'),
+    path('post/<str:slug>/edit',views.post_edit, name='edit'),
+    path('post/<str:slug>/delete',views.post_delete, name='delete'),
     path('create/',views.post_create, name='create'),
     
 
- 
-    
 ]

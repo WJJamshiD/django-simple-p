@@ -29,10 +29,10 @@ def post_list(request):
     
         
 
-def post_detail(request,abc=None):
+def post_detail(request,slug=None):
     if request.method=='GET':
-        #obj=get_object_or_404(Post,title=abc)
-        obj=Post.objects.get(id=abc)
+        obj=get_object_or_404(Post,slug=slug)
+        #obj=Post.objects.get(slug=slug)
         context={
             'post':obj,
         }
@@ -43,14 +43,14 @@ def post_delete(request,abc=None):
     if request.method=='GET':
         if not request.user.is_staff and not request.user.is_superuser:
             raise Http404
-        #obj=get_object_or_404(Post,title=abc)
-        obj=Post.objects.get(id=abc)
+        obj=get_object_or_404(Post,slug=slug)
+        #obj=Post.objects.get(slug=slug)
         obj.delete()
         messages.info(request,'Message deleted!')
         return redirect('post_list')   
 
-def post_edit(request,abc=None):
-    post=Post.objects.get(id=abc)
+def post_edit(request,slug=None):
+    post=get_object_or_404(Post,slug=slug)
     form=PostForm(request.POST or None,request.FILES or None,instance=post)
     if request.method=='GET':
         context={
@@ -72,6 +72,8 @@ def post_edit(request,abc=None):
 
 
 def post_create(request):
+    if not request.user.is_authenticated:
+        return redirect('post_list')
     if request.method=='GET':
         form=PostForm()
         context={
@@ -82,6 +84,7 @@ def post_create(request):
         form=PostForm(request.POST or None,request.FILES or None)
         if form.is_valid():
             data=form.save(commit=False)
+            data.user=request.user
             data.save()
             messages.success(request,'Succesfully creted!')
             return HttpResponseRedirect(data.get_absolute_url())

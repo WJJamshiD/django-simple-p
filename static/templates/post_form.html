@@ -1,15 +1,31 @@
-Create your form
-{% if messages%}
-{%for item in messages%}
-<p> {{item}} </p>
-{% endfor %}
-{%endif%}
 
-<form action=' ' method='POST' enctype='multipart/form-data'>
-{% csrf_token %}
-{{form.as_p}}
+{% extends 'base.html' %}
 
-<input type=submit value='Create' >
-</form>
+{% block extrastyle %}
+{{form.media}}
+{% endblock extrastyle %}
 
+{% block main %}
 
+ <div class='container '>
+
+<h1 class='text-center'>Create your post </h1>
+<div class='row mt-2'>
+    <div class='col-sm-6'>
+        <h2> Preview</h2>
+        
+    </div>
+    <div class='col-sm-6'>
+        <h2> Post Input </h2>
+        {% include 'messages.html' %}
+        <form action=' ' method='POST' enctype='multipart/form-data'>
+        {% csrf_token %}
+        {{form.as_p}}
+
+        <input type=submit value='Create' >
+        </form>
+    </div>
+</div>
+</div>
+
+{%endblock %}
