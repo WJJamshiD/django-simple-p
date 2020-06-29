@@ -7,27 +7,35 @@
 
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-<link rel='stylesheet'  href="{%static 'css/custom.css'%}"
+<link rel='stylesheet'  href="{%static 'css/custom.css'%}"/>
 {% block extrastyle %}
 {% endblock extrastyle %}
 <head>
 <body>
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v7.0"></script>
+
+<nav class='container' aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item " aria-current="page"> <a href='{{post_list}}'> Home </a></li>
+
+
+    {%block nav%}
+    {%endblock nav%}
+    {% if  not request.user.is_authenticated %}
+    <li class="breadcrumb-item" aria-current="page"  > <a class='float-right'href="{% url 'login'%}"> Login </a></li>
+    <li class="breadcrumb-item  " aria-current="page"> <a href="{% url 'register'%}"> Register </a></li>
+    {% else %}
+    <li class="breadcrumb-item " aria-current="page"  > <a href="{% url 'logout'%}"> Logut </a></li>
+    {% endif %}
+  </ol>
+</nav>
 {% block main %}
 {% endblock main %}
 
 
 
-
-
-
-
-
-
-
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
@@ -37,21 +45,38 @@
 	
 $(document).ready(function(){
 
-$(".markdown").each(function(){
-var con=$(this).text()
-var markedCon=marked(con)
-$(this).html(markedCon)
+    $(".markdown").each(function(){
+        var con=$(this).text()
+        var markedCon=marked(con)
+        $(this).html(markedCon)
+    })
 
-})
+    $(".image-in-post img").each(function(){
+        $(this).addClass('img-fluid');
+    })
 
-$(".image-in-post img").each(function(){
-$(this).addClass('img-fluid');
+    var itemTitle=$('#id_title')
+    var itemContent=$('#wmd-input-id_content')
+    
+    function setTitle(value){
+        $('#preview-title').text(value.val())
+    }
 
-})
+    function setContent(value){
+        $('#preview-content').html(marked(value.val()))
+        $('#preview-content img').each(function(){
+            $(this).addClass('img-fluid')
+        })
+    }   
+
+    
+{% block script %}
+{% endblock script %}
 })
 
 
 
 </script>
+
 </body>
 </html>

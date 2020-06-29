@@ -1,5 +1,6 @@
 from django.contrib import admin
 from  .models import Post
+from django.contrib.contenttypes.models import ContentType
 # Register your models here.
 
 @admin.register(Post)
@@ -24,3 +25,4 @@ class PostAdminModel(admin.ModelAdmin):
 
 
 
+admin.site.register(ContentType)

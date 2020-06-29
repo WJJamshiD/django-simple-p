@@ -1,4 +1,20 @@
 .wmd-panel{
     margin-left: 0px!important;
     margin-right: 0px!important;
+    
+    min-width: 98%!important;
+}
+
+#wmd-preview-id_content{
+    display: none!important;
+}
+
+.blockquote{
+    padding-left:20px;
+    border-left: 3px dashed lightslategrey ;
+
+}
+
+.comment-reply{
+    display:none
 }

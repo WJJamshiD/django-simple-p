@@ -1,5 +1,5 @@
-
 {% extends 'base.html' %}
+{%load crispy_forms_tags%}
 
 {% block extrastyle %}
 {{form.media}}
@@ -11,21 +11,42 @@
 
 <h1 class='text-center'>Create your post </h1>
 <div class='row mt-2'>
-    <div class='col-sm-6'>
-        <h2> Preview</h2>
-        
-    </div>
-    <div class='col-sm-6'>
+<div class='col-sm-6'>
         <h2> Post Input </h2>
+        <hr/>
         {% include 'messages.html' %}
         <form action=' ' method='POST' enctype='multipart/form-data'>
         {% csrf_token %}
-        {{form.as_p}}
+        {{form|crispy}}
 
         <input type=submit value='Create' >
         </form>
     </div>
+    <div class='col-sm-6'>
+        <h2> Preview</h2>
+        <hr/>
+        <h3 id='preview-title'></h3>
+        <div id='preview-content'></div>
+
+    </div>
+    
 </div>
 </div>
 
 {%endblock %}
+
+<script>
+{% block script %}
+    setTitle(itemTitle);
+    setContent(itemContent);
+ 
+    itemTitle.keyup(function(){
+        setTitle(itemTitle);
+    })
+
+    itemContent.keyup(function(){
+        setContent(itemContent);
+    })
+
+{% endblock script %}
+</script>

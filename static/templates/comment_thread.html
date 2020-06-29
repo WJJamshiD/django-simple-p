@@ -1,0 +1,51 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% include 'messages.html' %}
+
+{% block main %}
+<div class='container mt-3'>
+<div class='row'>
+    <div class=" card col-sm-6 offset-sm-3 " style="width: 18rem;">
+        <blockquote >
+            <p class="mb-0">{{comment.content}}</p>
+            <footer class="blockquote-footer">
+                {{comment.user}} | <cite title="Source Title">{{comment.timestamp|timesince}} ago </cite>
+                {% if comment.children %}|{{comment.children.count}} Replies {% endif %}
+            </footer>
+            <hr>
+                <div> 
+                    {% for child_comment in comment.children  %}
+                    <blockquote class="blockquote">
+                    <p class="mb-0">{{child_comment.content}}</p>
+                    <footer class="blockquote-footer">{{child_comment.user}} | <cite title="Source Title">{{child_comment.timestamp|timesince}} ago</cite></footer>
+                    </blockquote>
+                    {% endfor %}
+                    {% if request.user.is_authenticated %}
+                        <form action='' method='POST'> {% csrf_token %}
+                        {{form|crispy}}
+                        <input type='hidden' name='parent_id' value='{{comment.id}}'/>
+                        <button type='submit' class='btn btn-primary' > reply </button>
+                        </form>
+                    {%else%}
+                    <p> you must login to reply to this comment<p>
+                    {% endif %}
+                </div>
+        </blockquote>
+    </div>
+    
+</div>
+ 
+
+</div></div>
+{% endblock main %}
+
+
+<script>
+{% block script %}
+
+
+{% endblock script %}
+</script>

@@ -1,10 +1,14 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from django.core.paginator import Paginator
 from .models import Post
+from comments.models import Comment
+from comments.forms import CommentForm
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from .froms import PostForm
+from .forms import PostForm
 from django.contrib import messages 
 from django.db.models import Q
+from .utils import get_read_time
 # Create your views here.
 
 def post_list(request):
@@ -30,14 +34,43 @@ def post_list(request):
         
 
 def post_detail(request,slug=None):
-    if request.method=='GET':
-        obj=get_object_or_404(Post,slug=slug)
-        #obj=Post.objects.get(slug=slug)
-        context={
-            'post':obj,
-        }
-        return render(request,'detail.html',context)
-   
+    obj=get_object_or_404(Post,slug=slug)
+    initial_data={
+        "content_type":obj.content_type,
+        "object_id":obj.id
+    }
+    form=CommentForm(request.POST or None, initial=initial_data)
+    if form.is_valid() and request.user.is_authenticated:
+        c_type=form.cleaned_data['content_type']
+        obj_id=form.cleaned_data['object_id']
+        content=form.cleaned_data['content']
+        #parent_id=form.cleaned_data['parent_id']
+        content_type=ContentType.objects.get( model=c_type)
+        parent_obj=None
+        try:
+            parent_id=int(request.POST.get('parent_id'))
+        except:
+            parent_id=None
+        if parent_id:
+            parent_qs=Comment.objects.filter(id=parent_id)
+            if parent_qs.exists():
+                parent_obj=parent_qs.first()
+        new_comment,created=Comment.objects.get_or_create(content_type=content_type,
+                                                        object_id=obj_id,
+                                                        content=content,
+                                                        user=request.user,
+                                                        parent=parent_obj)
+        return HttpResponseRedirect(obj.get_absolute_url())                                
+    else:
+        print(form.errors)
+    comments=obj.comments
+    context={
+        'post':obj,
+        'comments':comments,
+        'form':form,
+    }
+    return render(request,'detail.html',context)
+
 
 def post_delete(request,abc=None):
     if request.method=='GET':

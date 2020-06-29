@@ -1,31 +1,98 @@
 
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 
+{%block nav%}
+<li class="breadcrumb-item " aria-current="page"> <a href='{{post.get_absolute_url}}'> {{post.title}} </a></li>
+{%endblock nav%}
 
-{% include 'messages.html' %}
+
 
 {% block main %}
 <div class='container'>
 <div class='row'>
-<div class=" card col-sm-6 offset-sm-3 " style="width: 18rem;">
+<div class=" card col-sm-8 offset-sm-2 " style="width: 18rem;">
+
+{% include 'messages.html' %}
     <div class="card-body ">
     <img src='{{post.image.url}}' class="img-fluid">
-        <h5 class="card-title">{{post.title}}</h5>
+        <h5 class="card-title">{{post.title}}</h5><p> Read time: {{post.read_time}} mins </p>
         <div class="card-text markdown image-in-post">{{post.content}}</div><hr>
+        
         <p class='float-right'> {{post.update|timesince}} ago</p>
         
         <p class=''> {{post.user}} </p>
         <a href="{{post.get_absolute_url}}/edit"><button class='btn  btn-primary' type='button'>edit</button > </a>
         <a href="{{post.get_absolute_url}}/delete"><button class='btn  btn-primary' type='button'>delete</button > </a>
         <hr>
+        
         <div class="fb-like" data-href="{{request.build_absolute_uri}}" data-width="" data-layout="standard" data-action="like" data-size="small" data-share="true"></div>
+
+        <hr>
+        <h2> Comments </h2>
+        {% if request.user.is_authenticated %}
+            <form action='' method='POST'> {% csrf_token %}
+            {{form|crispy}}
+            <button type='submit' class='btn btn-primary' > submit </button>
+            </form>
+        {%else%}
+            <p> You must login to comment on this post </p>
+        {% endif %}
+        {% for comment in comments %}
+        
+            <blockquote class="blockquote">
+            <p class="mb-0">{{comment.content}}</p>
+            <footer class="blockquote-footer">
+                {{comment.user}} | <cite title="Source Title">{{comment.timestamp|timesince}} ago </cite>
+                {% if comment.children %}|{{comment.children.count}} Replies {% endif %}
+                |<a href='{{comment.get_absolute_url}}' > thread </a>
+                | <a href='#' class='comment-reply-toggler'> Reply </a>
+                {% if comment.user == request.user %}
+                    |<a href='{{comment.get_delete_url}}' > Delete </a>
+                {% endif %}
+            </footer>
+                <div class='comment-reply'> 
+                    {% for child_comment in comment.children  %}
+                    <blockquote class="blockquote">
+                    <p class="mb-0">{{child_comment.content}}</p>
+                    <footer class="blockquote-footer">{{child_comment.user}} | <cite title="Source Title">{{child_comment.timestamp|timesince}} ago</cite>
+                    {% if child_comment.user == request.user %}
+                        |<a href='{{child_comment.get_delete_url}}' > Delete </a>
+                    {% endif %}
+                    </footer>
+                    </blockquote>
+                    {% endfor %}
+                    {% if request.user.is_authenticated %}
+                        <form action='' method='POST'> {% csrf_token %}
+                        {{form|crispy}}
+                        <input type='hidden' name='parent_id' value='{{comment.id}}'/>
+                        <button type='submit' class='btn btn-primary' > reply </button>
+                        </form>
+                    {%else%}
+                    <p> you must login to reply to this comment<p>
+                    {% endif %}
+                </div>
+            </blockquote>
+            <hr>
+            {% endfor %}
+
     </div>
     
 </div>
+ 
 
-
-
-<div class="fb-comments col-sm-6  offset-sm-3" data-href="{{request.build_absolute_uri}}" data-numposts="5" 
-data-width="500"></div></div></div>
+</div></div>
 {% endblock main %}
+
+
+<script>
+{% block script %}
+    $('.comment-reply-toggler').click(function(event){
+        event.preventDefault();
+        var bu=$(this).parent().next('.comment-reply').fadeToggle();
+    })
+
+
+{% endblock script %}
+</script>

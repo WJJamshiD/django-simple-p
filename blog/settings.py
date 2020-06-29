@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #third-party 
     'markdown2',
-    'pagedown',
+    'pagedown.apps.PagedownConfig',
+    'crispy_forms',
     #myapps
-    'main'
+    'main',
+    'comments',
+    'accaunts'
 ]
 
 MIDDLEWARE = [
@@ -123,8 +126,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIR= [os.path.join(BASE_DIR,'static','static'),]
+STATICFILES_DIRS= [os.path.join(BASE_DIR,'static','static'),]
 STATIC_ROOT=os.path.join(BASE_DIR,'static-cdn')
 MEDIA_ROOT=os.path.join(BASE_DIR,'media-cdn')
 MEDIA_URL='/media/'
 # django_heroku.settings(locals())
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+LOGIN_URL='/login'
